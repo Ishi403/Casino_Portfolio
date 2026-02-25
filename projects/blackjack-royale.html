@@ -528,6 +528,100 @@ header{animation:fadeDown 0.8s 0.1s cubic-bezier(0.4,0,0.2,1) both}
   .logo-wrap,.hud-left,.hud-right{grid-column:1;text-align:center;align-items:center}
   .hud-right{align-items:center}
 }
+@media (max-width: 900px) {
+  #app { padding: 0 12px 48px; }
+  header { gap: 12px; padding: 16px 0; }
+  .table { padding: 28px 40px 44px; margin-bottom: 12px; }
+  .bet-ring svg { width: 80px; height: 80px; }
+  .hand-section { margin-bottom: 16px; }
+  .chips-row { gap: 10px; padding: 8px 0; }
+  .chip { width: 56px; height: 56px; font-size: 0.58rem; }
+  .action-bar { gap: 6px; }
+  .abtn { padding: 12px 22px; font-size: 0.62rem; }
+  .bottom-hud { gap: 12px; padding: 12px; }
+}
+@media (max-width: 640px) {
+  #app { padding: 0 8px 40px; min-height: 100vh; }
+  body { font-size: 13px; }
+  header {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 6px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(200,168,75,0.15);
+    margin-bottom: 8px;
+  }
+  .logo-wrap, .hud-left, .hud-right { grid-column: 1; text-align: center; align-items: center; }
+  .hud-right { align-items: center; }
+  .logo { font-size: 1.8rem; }
+  .logo-subtitle { font-size: 0.45rem; }
+  .hud-label { font-size: 0.48rem; }
+  .hud-val { font-size: 1.1rem; }
+  .table {
+    padding: 20px 20px 28px;
+    border-radius: 80px 80px 40px 40px;
+    margin-bottom: 8px;
+    border: 4px solid var(--gold3);
+  }
+  .table-wrap::before { border-radius: 80px 80px 40px 40px; }
+  .table-rule { font-size: 0.48rem; margin-bottom: 12px; }
+  .score-badge { font-size: 0.52rem; margin-bottom: 8px; }
+  .score-num { font-size: 1.2rem; padding: 0 10px; }
+  .hand-section { margin-bottom: 12px; gap: 8px; }
+  .cards { gap: 4px; }
+  .card { font-size: 0.8rem; width: 52px; height: 78px; }
+  .divider { margin: 8px 0; font-size: 0.7rem; }
+  .divider-gem { width: 8px; height: 8px; }
+  .bet-ring { position: relative; width: 70px; height: 70px; }
+  .bet-ring svg { width: 70px; height: 70px; }
+  .bet-ring-label { font-size: 0.45rem; }
+  .bet-ring-val { font-size: 0.9rem; }
+  .result-banner { font-size: 0.5rem; }
+  .result-title { font-size: 1.8rem; }
+  .result-sub { font-size: 0.6rem; }
+  .chips-row { gap: 6px; padding: 4px 0; }
+  .chip {
+    width: 48px;
+    height: 48px;
+    font-size: 0.55rem;
+    letter-spacing: 0;
+  }
+  .action-bar { gap: 4px; flex-wrap: wrap; }
+  .abtn {
+    padding: 10px 16px;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    clip-path: polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);
+  }
+  .bottom-hud {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    width: 100%;
+  }
+  .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; }
+  .stat { padding: 6px 4px; font-size: 0.6rem; }
+  .stat-n { font-size: 1rem; }
+  .stat-l { font-size: 0.45rem; }
+  .history-row { gap: 4px; font-size: 0.5rem; }
+  .deck-meter { gap: 4px; font-size: 0.5rem; }
+  .deck-track { height: 4px; width: 60px; }
+}
+@media (max-width: 480px) {
+  body { font-size: 12px; }
+  #app { padding: 0 6px 36px; }
+  header { gap: 4px; padding: 8px 0; }
+  .logo { font-size: 1.5rem; }
+  .hud-val { font-size: 0.95rem; }
+  .table { padding: 16px 12px 20px; }
+  .hand-section { margin-bottom: 8px; }
+  .chip { width: 40px; height: 40px; font-size: 0.48rem; }
+  .chips-row { gap: 4px; }
+  .abtn { padding: 8px 12px; font-size: 0.52rem; }
+  .card { width: 44px; height: 66px; font-size: 0.7rem; }
+  .score-num { font-size: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
@@ -541,6 +635,10 @@ header{animation:fadeDown 0.8s 0.1s cubic-bezier(0.4,0,0.2,1) both}
 
 <!-- HEADER -->
 <header>
+  <a href="../index.html" class="back-btn" title="Back to Portfolio" aria-label="Back to Portfolio" style="position:fixed;top:16px;left:16px;z-index:1000;background:rgba(6,9,15,0.85);border:1.5px solid rgba(200,168,75,0.3);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 0 rgba(200,168,75,0.15),0 4px 16px rgba(0,0,0,0.4);transition:all 0.28s cubic-bezier(0.34,1.56,0.64,1);opacity:0.95;outline:none;backdrop-filter:blur(8px);">
+    <svg width="20" height="20" viewBox="0 0 32 32" fill="none" style="transition:all 0.3s ease;"><path d="M20 10 L12 16 L20 22" stroke="#c8a84b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+  </a>
+
   <div class="hud-left">
     <div class="hud-label">Balance</div>
     <div class="hud-val" id="balance-display">$1,000</div>

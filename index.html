@@ -122,9 +122,30 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 1.5rem;
-    animation: fadeInUp 1s ease 0.2s forwards;
+    animation: heroTitleAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
     opacity: 0;
-    filter: drop-shadow(0 0 30px var(--shadow-gold));
+    filter: drop-shadow(0 0 40px rgba(212,175,55,0.3));
+    transition: filter 0.6s ease;
+  }
+
+  .hero-title:hover {
+    filter: drop-shadow(0 0 60px rgba(212,175,55,0.5)) drop-shadow(0 0 30px rgba(212,175,55,0.2));
+  }
+
+  @keyframes heroTitleAppear {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+      filter: drop-shadow(0 0 0px rgba(212,175,55,0));
+    }
+    50% {
+      filter: drop-shadow(0 0 60px rgba(212,175,55,0.3));
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: drop-shadow(0 0 40px rgba(212,175,55,0.3));
+    }
   }
 
   .hero-subtitle {
@@ -206,6 +227,35 @@
     to { transform: rotate(360deg); }
   }
 
+  @keyframes featureSpin {
+    0% { transform: rotateY(0deg) rotateX(0deg) scale(1); }
+    50% { transform: rotateY(360deg) rotateX(8deg) scale(1.05); }
+    100% { transform: rotateY(720deg) rotateX(0deg) scale(1); }
+  }
+
+  @keyframes reelSpin {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .featured-slot-machine {
+    animation: featureSpin 6s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+    filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.2));
+  }
+
+  .featured-slot-machine .reel-1 {
+    animation: reelSpin 2s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
+  }
+
+  .featured-slot-machine .reel-2 {
+    animation: reelSpin 2.4s cubic-bezier(0.65, 0.05, 0.36, 1) infinite 0.2s;
+  }
+
+  .featured-slot-machine .reel-3 {
+    animation: reelSpin 2.8s cubic-bezier(0.65, 0.05, 0.36, 1) infinite 0.4s;
+  }
+
   .cta-row {
     display: flex;
     gap: 1rem;
@@ -247,7 +297,14 @@
   }
 
   .btn-primary:hover::before { transform: translateX(100%); }
-  .btn-primary:hover { box-shadow: 0 0 30px var(--shadow-gold); }
+  .btn-primary:hover {
+    box-shadow: 0 0 30px var(--shadow-gold), 0 0 60px rgba(212,175,55,0.2), 0 8px 24px rgba(0,0,0,0.4);
+    transform: translateY(-3px);
+    background-position: 100% 0;
+  }
+  .btn-primary:active {
+    transform: translateY(-1px);
+  }
 
   .btn-ghost {
     background: transparent;
@@ -266,7 +323,12 @@
 
   .btn-ghost:hover {
     background: rgba(212,175,55,0.1);
-    box-shadow: 0 0 20px var(--shadow-gold);
+    box-shadow: 0 0 20px var(--shadow-gold), 0 0 40px rgba(212,175,55,0.1);
+    transform: translateY(-2px);
+    border-color: var(--gold-light);
+  }
+  .btn-ghost:active {
+    transform: translateY(0px);
   }
 
   /* ======= SECTION COMMONS ======= */
@@ -297,6 +359,12 @@
     background-clip: text;
     margin-bottom: 1rem;
     line-height: 1.1;
+    transition: filter 0.4s ease, text-shadow 0.4s ease;
+    filter: drop-shadow(0 0 0px rgba(212,175,55,0));
+  }
+
+  .section-title:hover, .section-title.reveal.visible {
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.4));
   }
 
   .section-desc {
@@ -357,29 +425,51 @@
     background: linear-gradient(90deg, var(--gold-dark), var(--gold-light) 60%, var(--gold-dark));
     color: var(--black-card);
     border-color: var(--gold);
-    box-shadow: 0 4px 24px 0 var(--shadow-gold);
+    box-shadow: 0 4px 24px 0 var(--shadow-gold), 0 0 20px rgba(212,175,55,0.2);
+    transform: translateY(-2px);
   }
   .game-tab:hover:not(.active) {
     background: rgba(212,175,55,0.12);
     color: var(--gold-light);
     border-color: var(--gold-light);
+    transform: translateY(-1px);
   }
 
-  /* ======= GAMES GRID ======= */
   .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 1.2rem;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  .game-card {
+    animation: cardStagger 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+
+  .game-card:nth-child(1) { animation-delay: 0.1s; }
+  .game-card:nth-child(2) { animation-delay: 0.2s; }
+  .game-card:nth-child(3) { animation-delay: 0.3s; }
+  .game-card:nth-child(4) { animation-delay: 0.4s; }
+  .game-card:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes cardStagger {
+    from {
+      opacity: 0;
+      transform: translateY(60px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   .game-card {
     position: relative;
     background: linear-gradient(135deg, rgba(13,59,46,0.8), rgba(10,13,10,0.9));
     border: 1px solid rgba(212,175,55,0.2);
-    padding: 2.5rem 2rem;
-    transition: all 0.4s ease;
+    padding: 2rem 1.8rem;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
@@ -390,43 +480,21 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(212,175,55,0.05), transparent);
+    background: radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.08), transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
   }
 
   .game-card:hover {
     border-color: var(--gold);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--shadow-gold);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--shadow-gold), 0 0 60px rgba(212,175,55,0.15);
   }
 
   .game-card:hover::before { opacity: 1; }
 
-  .card-corner {
-    position: absolute;
-    top: 0; left: 0;
-    width: 40px; height: 40px;
-    border-top: 2px solid var(--gold);
-    border-left: 2px solid var(--gold);
-    opacity: 0;
-    transform: translate(-5px, -5px);
-    transition: all 0.3s ease;
-  }
-
-  .card-corner.br {
-    top: auto; left: auto;
-    bottom: 0; right: 0;
-    border-top: none; border-left: none;
-    border-bottom: 2px solid var(--gold);
-    border-right: 2px solid var(--gold);
-    transform: translate(5px, 5px);
-  }
-
-  .game-card:hover .card-corner {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
+  /* Card corners removed for cleaner hover effect */
 
   .game-icon {
     font-size: 3rem;
@@ -437,42 +505,90 @@
 
   .game-card:hover .game-icon { transform: scale(1.15) rotate(5deg); }
 
+  .game-icon {
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+    display: block;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .game-card:hover .game-icon svg {
+    animation: iconPulse 0.6s ease;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+  }
+
+  @keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1.15) rotate(5deg); }
+  }
+
   .game-tag {
     display: inline-block;
     font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
     color: var(--gold);
     border: 1px solid rgba(212,175,55,0.3);
-    padding: 0.2rem 0.6rem;
-    margin-bottom: 1rem;
+    padding: 0.25rem 0.6rem;
+    margin-bottom: 0.6rem;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .game-tag {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.1);
+    box-shadow: 0 0 12px rgba(212,175,55,0.3);
+    transform: scale(1.05);
   }
 
   .game-name {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: var(--cream);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .game-name {
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(212,175,55,0.3);
+    transform: translateY(-3px);
   }
 
   .game-desc {
-    font-size: 0.9rem;
-    color: rgba(245,237,214,0.5);
-    line-height: 1.7;
+    font-size: 0.85rem;
+    color: rgba(245,237,214,0.55);
+    line-height: 1.5;
     font-style: italic;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .game-desc {
+    color: rgba(245,237,214,0.75);
   }
 
   .game-stats {
     display: flex;
     gap: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .game-stats {
+    opacity: 1;
   }
 
   .stat {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .stat {
+    transform: translateY(-2px);
   }
 
   .stat-value {
@@ -480,6 +596,11 @@
     font-size: 1rem;
     color: var(--gold);
     font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .stat-value {
+    text-shadow: 0 0 15px rgba(212,175,55,0.4);
   }
 
   .stat-label {
@@ -487,23 +608,51 @@
     color: rgba(245,237,214,0.4);
     letter-spacing: 0.15em;
     text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .game-card:hover .stat-label {
+    color: rgba(245,237,214,0.65);
   }
 
   /* Featured card */
   .game-card.featured {
     grid-column: span 2;
-    background: linear-gradient(135deg, rgba(15,76,53,0.7), rgba(10,13,10,0.95));
-    border-color: rgba(212,175,55,0.4);
+    background: linear-gradient(135deg, rgba(15,76,53,0.6), rgba(10,13,10,0.95));
+    border-color: rgba(212,175,55,0.35);
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 2rem;
+    gap: 1.8rem;
+    padding: 2.5rem;
+  }
+
+  .game-card.featured:hover {
+    border-color: rgba(212,175,55,0.6);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.5), 0 0 40px var(--shadow-gold), 0 0 80px rgba(212,175,55,0.1);
+    transform: translateY(-10px);
   }
 
   @media (max-width: 700px) {
     .game-card.featured {
       grid-column: span 1;
       grid-template-columns: 1fr;
+    }
+    .featured-visual {
+      height: 150px;
+    }
+    .featured-slot-machine {
+      width: 160px;
+      height: 160px;
+    }
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      top: 12px;
+      left: 12px;
+    }
+    .back-btn:hover, .back-btn:focus {
+      transform: scale(1.1) rotate(-8deg) !important;
     }
   }
 
@@ -603,14 +752,22 @@
     background: rgba(212,175,55,0.1);
     position: relative;
     overflow: hidden;
+    border-radius: 2px;
+    transition: background 0.3s ease;
+  }
+
+  .skill-item:hover .skill-bar {
+    background: rgba(212,175,55,0.2);
   }
 
   .skill-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
     width: 0%;
-    transition: width 1.5s ease 0.5s;
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s;
     position: relative;
+    box-shadow: 0 0 12px var(--shadow-gold);
+    border-radius: 2px;
   }
 
   .skill-fill::after {
@@ -619,11 +776,11 @@
     right: 0;
     top: 50%;
     transform: translate(50%, -50%);
-    width: 6px;
-    height: 6px;
-    background: var(--gold-light);
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, var(--gold-light), var(--gold));
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--gold);
+    box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(212,175,55,0.3);
   }
 
   /* ======= CARD TABLE DEMO ======= */
@@ -726,6 +883,14 @@
     padding: 4rem;
     text-align: center;
     position: relative;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 0 rgba(212,175,55,0.2);
+  }
+
+  .contact-box:hover {
+    border-color: rgba(212,175,55,0.5);
+    box-shadow: 0 0 40px rgba(212,175,55,0.25);
+    transform: translateY(-4px);
   }
 
   .contact-box::before {
@@ -734,6 +899,11 @@
     top: 8px; left: 8px; right: 8px; bottom: 8px;
     border: 1px solid rgba(212,175,55,0.08);
     pointer-events: none;
+    transition: border-color 0.4s ease;
+  }
+
+  .contact-box:hover::before {
+    border-color: rgba(212,175,55,0.2);
   }
 
   .contact-tagline {
@@ -832,10 +1002,19 @@
   .reveal {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .game-card.reveal {
+    transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .game-card.reveal.visible {
     opacity: 1;
     transform: translateY(0);
   }
@@ -1114,10 +1293,35 @@ gameTabs.forEach(tab => {
   <div class="games-grid" id="gamesGrid">
     <!-- Featured -->
     <a href="projects/slot-machine.html" class="game-card featured reveal" data-category="slots" style="text-decoration: none; color: inherit;">
-      <div class="card-corner"></div>
-      <div class="card-corner br"></div>
       <div>
-        <span class="game-icon">🎰</span>
+          <span class="game-icon">
+            <!-- Polished Slot Machine SVG -->
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="slot-bg" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#F5EDD6"/>
+                  <stop offset="100%" stop-color="#A8891F"/>
+                </radialGradient>
+                <linearGradient id="slot-shadow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.7"/>
+                </linearGradient>
+              </defs>
+              <rect x="8" y="12" width="32" height="22" rx="7" fill="url(#slot-bg)" stroke="#A8891F" stroke-width="2"/>
+              <rect x="12" y="16" width="24" height="14" rx="3" fill="#222"/>
+              <rect x="14" y="18" width="6" height="10" rx="1.5" fill="#fff"/>
+              <rect x="21" y="18" width="6" height="10" rx="1.5" fill="#fff"/>
+              <rect x="28" y="18" width="6" height="10" rx="1.5" fill="#fff"/>
+              <text x="17" y="26" font-size="7" font-family="Cinzel" fill="#E74C3C">7</text>
+              <text x="24" y="26" font-size="7" font-family="Cinzel" fill="#E74C3C">7</text>
+              <text x="31" y="26" font-size="7" font-family="Cinzel" fill="#E74C3C">7</text>
+              <ellipse cx="24" cy="34" rx="8" ry="3" fill="url(#slot-shadow)"/>
+              <rect x="22" y="8" width="4" height="6" rx="2" fill="#F5D76E"/>
+              <rect x="38" y="14" width="2" height="10" rx="1" fill="#D4AF37"/>
+              <circle cx="39" cy="12" r="2" fill="#E74C3C" stroke="#A8891F" stroke-width="1"/>
+              <rect x="10" y="36" width="28" height="4" rx="2" fill="#0A0A0A" opacity="0.15"/>
+            </svg>
+          </span>
         <div class="game-tag">Featured · Slots</div>
         <h3 class="game-name">Inferno Reels</h3>
         <p class="game-desc">Ultimate casino slot machine with fire-themed design, animations, and immersive sound effects. Built with HTML5 Canvas for smooth 60fps gameplay experience.</p>
@@ -1128,14 +1332,51 @@ gameTabs.forEach(tab => {
         </div>
       </div>
       <div class="featured-visual">
-        <div style="font-size:5rem;animation:chipSpin 6s linear infinite;display:inline-block;filter:drop-shadow(0 0 20px rgba(212,175,55,0.4))">🎰</div>
+        <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="featured-slot-machine">
+          <defs>
+            <radialGradient id="slot-featured-bg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#F5EDD6"/>
+              <stop offset="100%" stop-color="#A8891F"/>
+            </radialGradient>
+            <linearGradient id="slot-featured-shadow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.8"/>
+            </linearGradient>
+            <filter id="featured-glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <circle cx="110" cy="110" r="105" fill="url(#slot-featured-bg)" stroke="#A8891F" stroke-width="3" filter="url(#featured-glow)"/>
+          <rect x="45" y="65" width="130" height="90" rx="15" fill="#222"/>
+          <rect x="55" y="75" width="30" height="70" rx="3" fill="#fff" class="reel-1"/>
+          <rect x="95" y="75" width="30" height="70" rx="3" fill="#fff" class="reel-2"/>
+          <rect x="135" y="75" width="30" height="70" rx="3" fill="#fff" class="reel-3"/>
+          <text x="70" y="120" font-size="28" font-family="Cinzel" fill="#E74C3C" font-weight="700">7</text>
+          <text x="110" y="120" font-size="28" font-family="Cinzel" fill="#E74C3C" font-weight="700">7</text>
+          <text x="150" y="120" font-size="28" font-family="Cinzel" fill="#E74C3C" font-weight="700">7</text>
+          <ellipse cx="110" cy="165" rx="50" ry="12" fill="url(#slot-featured-shadow)"/>
+          <rect x="90" y="40" width="12" height="18" rx="3" fill="#F5D76E" stroke="#D4AF37" stroke-width="1"/>
+          <rect x="175" y="70" width="5" height="35" rx="2" fill="#D4AF37"/>
+          <circle cx="182" cy="52" r="5" fill="#E74C3C" stroke="#A8891F" stroke-width="1.5"/>
+          <rect x="52" y="165" width="116" height="12" rx="6" fill="#0A0A0A" opacity="0.25"/>
+        </svg>
       </div>
     </a>
 
     <a href="projects/blackjack-royale.html" class="game-card reveal" data-category="blackjack" style="text-decoration: none; color: inherit;">
-      <div class="card-corner"></div>
-      <div class="card-corner br"></div>
-      <span class="game-icon">🃏</span>
+      <span class="game-icon">
+        <!-- Polished Blackjack SVG -->
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="24" height="32" rx="4" fill="#F5EDD6" stroke="#D4AF37" stroke-width="2"/>
+          <rect x="12" y="12" width="16" height="24" rx="2" fill="#0A0A0A"/>
+          <text x="20" y="28" text-anchor="middle" font-size="12" fill="#D4AF37" font-family="Cinzel">A</text>
+          <rect x="18" y="18" width="8" height="12" rx="2" fill="#E74C3C" opacity="0.15"/>
+        </svg>
+      </span>
       <div class="game-tag">Card · Blackjack</div>
       <h3 class="game-name">Blackjack Royale</h3>
       <p class="game-desc">Elegant Monte Carlo-style blackjack with classic casino atmosphere, smooth animations, and authentic gameplay mechanics.</p>
@@ -1146,9 +1387,16 @@ gameTabs.forEach(tab => {
     </a>
 
     <a href="royal-rouelette.html" class="game-card reveal" data-category="roulette" style="text-decoration: none; color: inherit;">
-      <div class="card-corner"></div>
-      <div class="card-corner br"></div>
-      <span class="game-icon">🎡</span>
+      <span class="game-icon">
+        <!-- Polished Roulette SVG -->
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="22" cy="22" r="18" fill="#0A0A0A" stroke="#D4AF37" stroke-width="2"/>
+          <circle cx="22" cy="22" r="14" fill="#C0392B"/>
+          <circle cx="22" cy="22" r="7" fill="#F5D76E"/>
+          <rect x="21" y="6" width="2" height="8" rx="1" fill="#D4AF37"/>
+          <circle cx="22" cy="22" r="18" fill="#0A0A0A" opacity="0.08"/>
+        </svg>
+      </span>
       <div class="game-tag">Table · Roulette</div>
       <h3 class="game-name">Royal Roulette NOIR</h3>
       <p class="game-desc">Sophisticated roulette experience with elegant dark theme, smooth wheel physics, and comprehensive betting options for the ultimate casino atmosphere.</p>
@@ -1159,9 +1407,15 @@ gameTabs.forEach(tab => {
     </a>
 
     <a href="baccarat.html" class="game-card reveal" data-category="baccarat" style="text-decoration: none; color: inherit;">
-      <div class="card-corner"></div>
-      <div class="card-corner br"></div>
-      <span class="game-icon">🎴</span>
+      <span class="game-icon">
+        <!-- Polished Baccarat SVG -->
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="24" height="28" rx="4" fill="#F5EDD6" stroke="#D4AF37" stroke-width="2"/>
+          <rect x="14" y="14" width="16" height="20" rx="2" fill="#0A0A0A"/>
+          <text x="22" y="28" text-anchor="middle" font-size="12" fill="#C0392B" font-family="Cinzel">9</text>
+          <rect x="18" y="18" width="8" height="12" rx="2" fill="#E74C3C" opacity="0.15"/>
+        </svg>
+      </span>
       <div class="game-tag">Card · Baccarat</div>
       <h3 class="game-name">Baccarat Royale</h3>
       <p class="game-desc">Luxurious Punto Banco with pattern tracking displays, authentic commission system, and high-limit room elegance. Asian casino style.</p>
@@ -1172,9 +1426,15 @@ gameTabs.forEach(tab => {
     </a>
 
     <a href="poker.html" class="game-card reveal" data-category="poker" style="text-decoration: none; color: inherit;">
-      <div class="card-corner"></div>
-      <div class="card-corner br"></div>
-      <span class="game-icon">♠️</span>
+      <span class="game-icon">
+        <!-- Polished Poker SVG -->
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="24" height="32" rx="4" fill="#F5EDD6" stroke="#D4AF37" stroke-width="2"/>
+          <rect x="12" y="12" width="16" height="24" rx="2" fill="#0A0A0A"/>
+          <text x="20" y="28" text-anchor="middle" font-size="12" fill="#0D3B2E" font-family="Cinzel">K</text>
+          <rect x="18" y="18" width="8" height="12" rx="2" fill="#0D3B2E" opacity="0.15"/>
+        </svg>
+      </span>
       <div class="game-tag">Card · Poker</div>
       <h3 class="game-name">ACES HIGH — Texas Hold'em</h3>
       <p class="game-desc">Immersive Texas Hold'em poker with sophisticated AI opponents, authentic casino feel, and comprehensive betting controls.</p>
@@ -1235,7 +1495,7 @@ gameTabs.forEach(tab => {
       "The house always wins — but your project doesn't have to play against the odds.
       Let's build something that stacks the deck in your favor."
     </p>
-    <a href="mailto:hsoscano@gmail.com" class="btn-primary" style="display:inline-block;text-decoration:none">
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=hsoscano@gmail.com" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;text-decoration:none">
       Deal Me In
     </a>
     <div class="contact-chips">
