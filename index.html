@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casino Game Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F5D76E;
+    --gold-dark: #A8891F;
+    --emerald: #0D3B2E;
+    --emerald-mid: #0A4D38;
+    --emerald-light: #1A6B50;
+    --felt: #0F4C35;
+    --cream: #F5EDD6;
+    --red: #C0392B;
+    --red-bright: #E74C3C;
+    --black-card: #0A0A0A;
+    --shadow-gold: rgba(212,175,55,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black-card);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23D4AF37'/%3E%3C/svg%3E") 10 10, auto;
+  }
+
+  /* ======= ANIMATED BG ======= */
+  .casino-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .felt-texture {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px),
+      repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px),
+      linear-gradient(160deg, #050F0A 0%, #0A1A12 40%, #080D0A 100%);
+  }
+
+  .gold-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.8) 100%);
+  }
+
+  .floating-suit {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.04;
+    animation: floatUp linear infinite;
+    color: var(--gold);
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.04; }
+    90% { opacity: 0.04; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ======= HEADER / HERO ======= */
+  .hero {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    padding: 0.5rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    animation: fadeInDown 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-badge::before, .hero-badge::after {
+    content: '♦';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 0.5rem;
+  }
+  .hero-badge::before { left: -1rem; }
+  .hero-badge::after { right: -1rem; }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 40%, var(--gold) 60%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease 0.2s forwards;
+    opacity: 0;
+    filter: drop-shadow(0 0 30px var(--shadow-gold));
+  }
+
+  .hero-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    color: rgba(245,237,214,0.6);
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+    animation: fadeInUp 1s ease 0.4s forwards;
+    opacity: 0;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    animation: fadeInUp 1s ease 0.6s forwards;
+    opacity: 0;
+  }
+
+  .hero-divider-line {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+
+  .hero-divider-line.right {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .hero-divider-icon {
+    color: var(--gold);
+    font-size: 1.2rem;
+  }
+
+  /* Spinning chip */
+  .chip-hero {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--red) 0deg 30deg, var(--black-card) 30deg 60deg,
+      var(--red) 60deg 90deg, var(--black-card) 90deg 120deg,
+      var(--red) 120deg 150deg, var(--black-card) 150deg 180deg,
+      var(--red) 180deg 210deg, var(--black-card) 210deg 240deg,
+      var(--red) 240deg 270deg, var(--black-card) 270deg 300deg,
+      var(--red) 300deg 330deg, var(--black-card) 330deg 360deg
+    );
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 0 8px rgba(212,175,55,0.15), 0 0 40px rgba(212,175,55,0.2), inset 0 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 3rem;
+    animation: chipSpin 8s linear infinite, fadeInUp 1s ease 0.1s forwards;
+    opacity: 0;
+    position: relative;
+  }
+
+  .chip-inner {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--black-card);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  @keyframes chipSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeInUp 1s ease 0.8s forwards;
+    opacity: 0;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    background-size: 200% 100%;
+    color: var(--black-card);
+    border: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover { box-shadow: 0 0 30px var(--shadow-gold); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(212,175,55,0.1);
+    box-shadow: 0 0 20px var(--shadow-gold);
+  }
+
+  /* ======= SECTION COMMONS ======= */
+  section {
+    position: relative;
+    z-index: 10;
+    padding: 6rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    text-align: center;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-light), var(--gold-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .section-desc {
+    text-align: center;
+    font-size: 1.1rem;
+    color: rgba(245,237,214,0.55);
+    max-width: 500px;
+    margin: 0 auto 4rem;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  .gold-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .gold-rule span {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .gold-rule i { color: var(--gold); font-size: 0.7rem; }
+
+  /* ======= GAMES GRID ======= */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .game-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(13,59,46,0.8), rgba(10,13,10,0.9));
+    border: 1px solid rgba(212,175,55,0.2);
+    padding: 2.5rem 2rem;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,175,55,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .game-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--shadow-gold);
+  }
+
+  .game-card:hover::before { opacity: 1; }
+
+  .card-corner {
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 40px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+    opacity: 0;
+    transform: translate(-5px, -5px);
+    transition: all 0.3s ease;
+  }
+
+  .card-corner.br {
+    top: auto; left: auto;
+    bottom: 0; right: 0;
+    border-top: none; border-left: none;
+    border-bottom: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+    transform: translate(5px, 5px);
+  }
+
+  .game-card:hover .card-corner {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .game-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .game-card:hover .game-icon { transform: scale(1.15) rotate(5deg); }
+
+  .game-tag {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.3);
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .game-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .game-desc {
+    font-size: 0.9rem;
+    color: rgba(245,237,214,0.5);
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .game-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: rgba(245,237,214,0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* Featured card */
+  .game-card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(15,76,53,0.7), rgba(10,13,10,0.95));
+    border-color: rgba(212,175,55,0.4);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  @media (max-width: 700px) {
+    .game-card.featured {
+      grid-column: span 1;
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .featured-visual {
+    position: relative;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ======= SKILLS / STATS BAR ======= */
+  .stats-section {
+    background: linear-gradient(180deg, transparent, rgba(13,59,46,0.15), transparent);
+    border-top: 1px solid rgba(212,175,55,0.1);
+    border-bottom: 1px solid rgba(212,175,55,0.1);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .stat-block {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border-right: 1px solid rgba(212,175,55,0.1);
+    position: relative;
+  }
+
+  .stat-block:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .stat-desc {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: rgba(245,237,214,0.4);
+    text-transform: uppercase;
+  }
+
+  /* ======= SKILLS PROGRESS ======= */
+  .skills-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 600px) {
+    .skills-container { grid-template-columns: 1fr; }
+  }
+
+  .skill-item {
+    margin-bottom: 1.8rem;
+  }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+  }
+
+  .skill-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--cream);
+    text-transform: uppercase;
+  }
+
+  .skill-pct {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    color: var(--gold);
+  }
+
+  .skill-bar {
+    height: 3px;
+    background: rgba(212,175,55,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+    width: 0%;
+    transition: width 1.5s ease 0.5s;
+    position: relative;
+  }
+
+  .skill-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ======= CARD TABLE DEMO ======= */
+  .table-demo {
+    max-width: 700px;
+    margin: 0 auto;
+    background: radial-gradient(ellipse at center, var(--felt), #0A3526);
+    border: 8px solid #1A0E05;
+    border-radius: 200px;
+    padding: 3rem 4rem;
+    box-shadow:
+      inset 0 10px 40px rgba(0,0,0,0.4),
+      0 0 0 4px var(--gold-dark),
+      0 0 60px rgba(0,0,0,0.8);
+    position: relative;
+    text-align: center;
+  }
+
+  .table-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: rgba(212,175,55,0.4);
+    margin-bottom: 2rem;
+    display: block;
+  }
+
+  .playing-cards {
+    display: flex;
+    justify-content: center;
+    gap: -10px;
+    margin-bottom: 2rem;
+    perspective: 600px;
+  }
+
+  .card {
+    width: 70px;
+    height: 100px;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 6px;
+    font-size: 1.2rem;
+    line-height: 1;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0 -5px;
+    position: relative;
+  }
+
+  .card:hover { transform: translateY(-15px) rotate(2deg); }
+
+  .card.red { color: #C0392B; }
+  .card.black { color: #111; }
+
+  .card-rank { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.9rem; }
+  .card-suit { font-size: 1rem; }
+
+  .card-back {
+    background: repeating-linear-gradient(45deg, #2C0A0A, #2C0A0A 2px, #3D0E0E 2px, #3D0E0E 8px);
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.1);
+  }
+
+  .card-back::after {
+    content: '♦';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: rgba(255,215,0,0.3);
+  }
+
+  .deal-btn {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border: none;
+    color: #0A0A0A;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 700;
+  }
+
+  .deal-btn:hover { box-shadow: 0 0 20px var(--shadow-gold); transform: scale(1.02); }
+
+  /* ======= CONTACT ======= */
+  .contact-box {
+    max-width: 700px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(13,59,46,0.4), rgba(10,10,10,0.8));
+    border: 1px solid rgba(212,175,55,0.25);
+    padding: 4rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(212,175,55,0.08);
+    pointer-events: none;
+  }
+
+  .contact-tagline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: rgba(245,237,214,0.6);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  .contact-chips {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .chip-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(212,175,55,0.08);
+    border: 1px solid rgba(212,175,55,0.2);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ======= ROULETTE WHEEL DECORATION ======= */
+  .roulette-deco {
+    position: absolute;
+    right: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 250px;
+    height: 250px;
+    opacity: 0.07;
+  }
+
+  .roulette-ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 20px solid transparent;
+    background: conic-gradient(
+      #C0392B 0deg 20deg, #111 20deg 30deg,
+      #C0392B 30deg 50deg, #111 50deg 60deg,
+      #C0392B 60deg 80deg, #111 80deg 90deg,
+      #C0392B 90deg 110deg, #111 110deg 120deg,
+      #C0392B 120deg 140deg, #111 140deg 150deg,
+      #C0392B 150deg 170deg, #111 170deg 180deg,
+      #C0392B 180deg 200deg, #111 200deg 210deg,
+      #C0392B 210deg 230deg, #111 230deg 240deg,
+      #C0392B 240deg 260deg, #111 260deg 270deg,
+      #C0392B 270deg 290deg, #111 290deg 300deg,
+      #C0392B 300deg 320deg, #111 320deg 330deg,
+      #C0392B 330deg 350deg, #111 350deg 360deg
+    );
+    animation: rotateSlow 20s linear infinite;
+  }
+
+  @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+  /* ======= FOOTER ======= */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .footer-suit-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    opacity: 0.2;
+  }
+
+  .footer-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: rgba(245,237,214,0.25);
+    text-transform: uppercase;
+  }
+
+  /* ======= SCROLL REVEAL ======= */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ======= KEYFRAMES ======= */
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+  }
+
+  @keyframes fadeInDown {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-20px); }
+  }
+
+  /* ======= NAV ======= */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(5,10,7,0.95), transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: rgba(245,237,214,0.5);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  @media (max-width: 500px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+  }
+
+  /* Neon glow text */
+  .neon-gold {
+    text-shadow: 0 0 20px var(--shadow-gold), 0 0 40px var(--shadow-gold);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="casino-bg">
+  <div class="felt-texture"></div>
+  <div class="gold-vignette"></div>
+  <div id="suits-container"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">♠ ROYAL FLUSH</a>
+  <ul class="nav-links">
+    <li><a href="#games">Games</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="chip-hero">
+    <div class="chip-inner">★</div>
+  </div>
+  <div class="hero-badge">Portfolio &bull; Casino Game Developer</div>
+  <h1 class="hero-title">HIGH<br>STAKES<br>DESIGN</h1>
+  <p class="hero-subtitle">Crafting immersive casino game experiences<br>where every pixel plays to win</p>
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <span class="hero-divider-icon">♦</span>
+    <span class="hero-divider-icon">♠</span>
+    <span class="hero-divider-icon">♥</span>
+    <span class="hero-divider-icon">♣</span>
+    <div class="hero-divider-line right"></div>
+  </div>
+  <div class="cta-row">
+    <a href="#games" class="btn-primary">View My Games</a>
+    <a href="#contact" class="btn-ghost">Place a Bet on Me</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-grid reveal" id="stats">
+    <div class="stat-block">
+      <span class="stat-number" data-target="12">0</span>
+      <span class="stat-desc">Games Built</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-number" data-target="4">0</span>
+      <span class="stat-desc">Years Experience</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-number" data-target="98">0</span>
+      <span class="stat-desc">% RTP Optimized</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-number" data-target="5">0</span>
+      <span class="stat-desc">Happy Clients</span>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games">
+  <div class="section-label">My Portfolio</div>
+  <h2 class="section-title">The Games Room</h2>
+  <div class="gold-rule"><span></span><i>♦</i><span></span></div>
+  <p class="section-desc">A curated collection of casino game projects, from RNG slots to live dealer simulations.</p>
+
+  <div class="games-grid">
+
+    <!-- Featured -->
+    <div class="game-card featured reveal">
+      <div class="card-corner"></div>
+      <div class="card-corner br"></div>
+      <div>
+        <span class="game-icon">🎰</span>
+        <div class="game-tag">Featured · Slots</div>
+        <h3 class="game-name">Golden Reels Deluxe</h3>
+        <p class="game-desc">A 5-reel, 25-payline slot with cascading wins, free spins, and a progressive jackpot engine. Built with HTML5 Canvas + WebGL for buttery 60fps animations.</p>
+        <div class="game-stats">
+          <div class="stat"><span class="stat-value">96.5%</span><span class="stat-label">RTP</span></div>
+          <div class="stat"><span class="stat-value">HTML5</span><span class="stat-label">Platform</span></div>
+          <div class="stat"><span class="stat-value">x2500</span><span class="stat-label">Max Win</span></div>
+        </div>
+      </div>
+      <div class="featured-visual">
+        <div style="font-size:5rem;animation:chipSpin 6s linear infinite;display:inline-block;filter:drop-shadow(0 0 20px rgba(212,175,55,0.4))">🎰</div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="card-corner"></div>
+      <div class="card-corner br"></div>
+      <span class="game-icon">🃏</span>
+      <div class="game-tag">Card · Blackjack</div>
+      <h3 class="game-name">Midnight Blackjack</h3>
+      <p class="game-desc">Cinematic blackjack with split, double down, insurance, and card counting visualizer for training mode.</p>
+      <div class="game-stats">
+        <div class="stat"><span class="stat-value">99.5%</span><span class="stat-label">RTP</span></div>
+        <div class="stat"><span class="stat-value">JS</span><span class="stat-label">Engine</span></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="card-corner"></div>
+      <div class="card-corner br"></div>
+      <span class="game-icon">🎡</span>
+      <div class="game-tag">Table · Roulette</div>
+      <h3 class="game-name">Monte Carlo Wheel</h3>
+      <p class="game-desc">European & American roulette with physics-accurate ball simulation and real-time betting statistics.</p>
+      <div class="game-stats">
+        <div class="stat"><span class="stat-value">97.3%</span><span class="stat-label">RTP</span></div>
+        <div class="stat"><span class="stat-value">Canvas</span><span class="stat-label">Engine</span></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="card-corner"></div>
+      <div class="card-corner br"></div>
+      <span class="game-icon">🎲</span>
+      <div class="game-tag">Dice · Craps</div>
+      <h3 class="game-name">Vegas Dice Club</h3>
+      <p class="game-desc">Full craps simulation with all betting options, 3D dice physics using Three.js, and multi-player lobby.</p>
+      <div class="game-stats">
+        <div class="stat"><span class="stat-value">98.6%</span><span class="stat-label">RTP</span></div>
+        <div class="stat"><span class="stat-value">Three.js</span><span class="stat-label">Engine</span></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="card-corner"></div>
+      <div class="card-corner br"></div>
+      <span class="game-icon">♠️</span>
+      <div class="game-tag">Card · Poker</div>
+      <h3 class="game-name">Royal Texas Hold'em</h3>
+      <p class="game-desc">AI-powered Texas Hold'em with adaptive difficulty AI opponents and hand strength analysis overlay.</p>
+      <div class="game-stats">
+        <div class="stat"><span class="stat-value">AI</span><span class="stat-label">Opponents</span></div>
+        <div class="stat"><span class="stat-value">Socket.io</span><span class="stat-label">Multiplayer</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DEMO TABLE -->
+<section id="demo">
+  <div class="section-label">Interactive</div>
+  <h2 class="section-title">The Table</h2>
+  <div class="gold-rule"><span></span><i>♥</i><span></span></div>
+  <p class="section-desc">Click the cards to fan them. Hit Deal for a new hand.</p>
+
+  <div class="table-demo reveal">
+    <span class="table-label">♠ BLACKJACK · DEMO TABLE ♠</span>
+    <div class="playing-cards" id="cardHand"></div>
+    <br>
+    <button class="deal-btn" onclick="dealHand()">⟳ &nbsp; DEAL NEW HAND</button>
+    <div id="hand-value" style="margin-top:1.5rem;font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.3em;color:rgba(212,175,55,0.6);"></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Expertise</div>
+  <h2 class="section-title">Chips on the Table</h2>
+  <div class="gold-rule"><span></span><i>♣</i><span></span></div>
+  <p class="section-desc">Technologies and skills I bring to every hand.</p>
+
+  <div class="skills-container reveal" id="skillsContainer">
+    <div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">HTML5 Canvas / WebGL</span><span class="skill-pct">95%</span></div><div class="skill-bar"><div class="skill-fill" data-width="95"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">JavaScript / TypeScript</span><span class="skill-pct">92%</span></div><div class="skill-bar"><div class="skill-fill" data-width="92"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Game Physics & RNG</span><span class="skill-pct">88%</span></div><div class="skill-bar"><div class="skill-fill" data-width="88"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">PixiJS / Three.js</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+    </div>
+    <div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">UI/UX Game Design</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Node.js / Socket.io</span><span class="skill-pct">80%</span></div><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Sound Design / GSAP</span><span class="skill-pct">78%</span></div><div class="skill-bar"><div class="skill-fill" data-width="78"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Math / Probability</span><span class="skill-pct">94%</span></div><div class="skill-bar"><div class="skill-fill" data-width="94"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-box reveal">
+    <div class="section-label" style="margin-bottom:0.5rem">Let's Work Together</div>
+    <h2 class="section-title" style="margin-bottom:1.5rem">All In?</h2>
+    <div class="gold-rule" style="margin-bottom:1.5rem"><span></span><i>♠</i><span></span></div>
+    <p class="contact-tagline">
+      "The house always wins — but your project doesn't have to play against the odds.
+      Let's build something that stacks the deck in your favor."
+    </p>
+    <a href="mailto:hello@royalflush.dev" class="btn-primary" style="display:inline-block;text-decoration:none">
+      Deal Me In
+    </a>
+    <div class="contact-chips">
+      <div class="chip-badge">♠ Available for Hire</div>
+      <div class="chip-badge">♥ Remote Friendly</div>
+      <div class="chip-badge">♦ igaming / Web3</div>
+      <div class="chip-badge">♣ Quick Response</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-suit-row">♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥</div>
+  <p class="footer-text">© 2025 Royal Flush Dev &nbsp;·&nbsp; All Rights Reserved &nbsp;·&nbsp; Play Responsibly</p>
+</footer>
+
+<script>
+// ======= FLOATING SUITS =======
+const suits = ['♠','♥','♦','♣'];
+const container = document.getElementById('suits-container');
+for (let i = 0; i < 20; i++) {
+  const el = document.createElement('div');
+  el.className = 'floating-suit';
+  el.textContent = suits[Math.floor(Math.random() * 4)];
+  el.style.left = Math.random() * 100 + 'vw';
+  el.style.animationDuration = (15 + Math.random() * 25) + 's';
+  el.style.animationDelay = (-Math.random() * 30) + 's';
+  el.style.fontSize = (1 + Math.random() * 2.5) + 'rem';
+  container.appendChild(el);
+}
+
+// ======= SCROLL REVEAL =======
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // trigger skills bars
+      if (e.target.id === 'skillsContainer' || e.target.contains(document.querySelector('.skill-fill'))) {
+        animateSkills();
+      }
+      // trigger counters
+      if (e.target.id === 'stats') animateCounters();
+    }
+  });
+}, { threshold: 0.15 });
+
+revealEls.forEach(el => observer.observe(el));
+
+// ======= COUNTER ANIMATION =======
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = +el.dataset.target;
+    let current = 0;
+    const step = target / 60;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current);
+      if (current >= target) clearInterval(timer);
+    }, 25);
+  });
+}
+
+// ======= SKILLS ANIMATION =======
+function animateSkills() {
+  document.querySelectorAll('.skill-fill').forEach(bar => {
+    bar.style.width = bar.dataset.width + '%';
+  });
+}
+
+// ======= BLACKJACK DEMO =======
+const deck = [];
+const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const suitSymbols = [
+  { s:'♠', c:'black' }, { s:'♥', c:'red' },
+  { s:'♦', c:'red' }, { s:'♣', c:'black' }
+];
+
+function buildDeck() {
+  deck.length = 0;
+  ranks.forEach(r => suitSymbols.forEach(s => deck.push({ rank: r, suit: s })));
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+}
+
+function cardValue(rank) {
+  if (['J','Q','K'].includes(rank)) return 10;
+  if (rank === 'A') return 11;
+  return +rank;
+}
+
+function handTotal(cards) {
+  let total = cards.reduce((sum, c) => sum + cardValue(c.rank), 0);
+  let aces = cards.filter(c => c.rank === 'A').length;
+  while (total > 21 && aces > 0) { total -= 10; aces--; }
+  return total;
+}
+
+function dealHand() {
+  buildDeck();
+  shuffle(deck);
+  const hand = [deck.pop(), deck.pop(), deck.pop()];
+  renderHand(hand);
+}
+
+function renderHand(hand) {
+  const container = document.getElementById('cardHand');
+  const rotations = [-10, -3, 5, 12, 18];
+  const startAngle = -((hand.length - 1) * 7) / 2;
+
+  container.innerHTML = hand.map((card, i) => {
+    const angle = startAngle + i * 7;
+    return `
+      <div class="card ${card.suit.c}" style="transform: rotate(${angle}deg) translateY(${Math.abs(angle)*1.5}px);transition-delay:${i*0.1}s">
+        <span class="card-rank">${card.rank}</span>
+        <span class="card-suit">${card.suit.s}</span>
+      </div>`;
+  }).join('');
+
+  const total = handTotal(hand);
+  const valEl = document.getElementById('hand-value');
+  let msg = `HAND VALUE: ${total}`;
+  if (total === 21) msg += ' &nbsp;·&nbsp; BLACKJACK! 🎉';
+  else if (total > 21) msg += ' &nbsp;·&nbsp; BUST!';
+  else if (total >= 17) msg += ' &nbsp;·&nbsp; STAND';
+  valEl.innerHTML = msg;
+}
+
+// Initial deal
+dealHand();
+</script>
+</body>
+</html>
