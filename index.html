@@ -326,6 +326,45 @@
 
   .gold-rule i { color: var(--gold); font-size: 0.7rem; }
 
+  /* ======= GAME TABS ======= */
+  .game-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    z-index: 20;
+    position: relative;
+  }
+  .game-tab {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    background: rgba(10,13,10,0.7);
+    border: 1px solid rgba(212,175,55,0.18);
+    border-radius: 2em;
+    padding: 0.7em 2.2em;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(.4,0,.2,1);
+    outline: none;
+    position: relative;
+    box-shadow: 0 2px 12px 0 rgba(212,175,55,0.04);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .game-tab.active, .game-tab:focus {
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-light) 60%, var(--gold-dark));
+    color: var(--black-card);
+    border-color: var(--gold);
+    box-shadow: 0 4px 24px 0 var(--shadow-gold);
+  }
+  .game-tab:hover:not(.active) {
+    background: rgba(212,175,55,0.12);
+    color: var(--gold-light);
+    border-color: var(--gold-light);
+  }
+
   /* ======= GAMES GRID ======= */
   .games-grid {
     display: grid;
@@ -824,7 +863,7 @@
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(180deg, rgba(5,10,7,0.95), transparent);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(1.5px);
   }
 
   .nav-logo {
@@ -838,25 +877,97 @@
 
   .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem;
     list-style: none;
+    align-items: center;
+    transition: opacity 0.3s cubic-bezier(.4,0,.2,1);
   }
-
-  .nav-links a {
+  .nav-link {
     font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     letter-spacing: 0.3em;
-    color: rgba(245,237,214,0.5);
+    color: rgba(245,237,214,0.7);
     text-decoration: none;
     text-transform: uppercase;
-    transition: color 0.3s ease;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2em;
+    position: relative;
+    transition: color 0.25s, background 0.25s, box-shadow 0.25s;
+    overflow: hidden;
+    will-change: color, background;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, var(--gold-light) 0%, transparent 80%);
+    opacity: 0.12;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+    z-index: 0;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: var(--gold);
+    background: rgba(212,175,55,0.08);
+    box-shadow: 0 2px 16px 0 var(--shadow-gold);
+  }
+  .nav-link:hover::after, .nav-link.active::after {
+    width: 180%;
+    height: 180%;
   }
 
-  .nav-links a:hover { color: var(--gold); }
+  .nav-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(212,175,55,0.07);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 1.5rem;
+    z-index: 200;
+  }
+  .nav-menu-btn span {
+    display: block;
+    width: 22px;
+    height: 3px;
+    background: var(--gold);
+    margin: 3px 0;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .nav-menu-btn:active { background: rgba(212,175,55,0.15); }
 
-  @media (max-width: 500px) {
+  @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
+    .nav-links {
+      position: fixed;
+      top: 64px;
+      right: 2vw;
+      background: rgba(10,13,10,0.98);
+      box-shadow: 0 8px 32px 0 rgba(212,175,55,0.08);
+      border-radius: 1.5em;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 2rem 2.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(.4,0,.2,1);
+      z-index: 150;
+    }
+    .nav-links.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .nav-menu-btn { display: flex; }
   }
 
   /* Neon glow text */
@@ -864,7 +975,57 @@
     text-shadow: 0 0 20px var(--shadow-gold), 0 0 40px var(--shadow-gold);
   }
 
-</style>
+  </style>
+<script>
+// NAVIGATION INTERACTIONS
+document.addEventListener('DOMContentLoaded', function() {
+  const navBtn = document.querySelector('.nav-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+  navBtn && navBtn.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+    navBtn.classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+      navBtn.classList.remove('open');
+    });
+  });
+  // Highlight active nav link
+  function setActiveLink() {
+    const fromTop = window.scrollY + 80;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const section = document.querySelector(link.getAttribute('href'));
+      if (section && section.offsetTop <= fromTop && section.offsetTop + section.offsetHeight > fromTop) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+  window.addEventListener('scroll', setActiveLink);
+  setActiveLink();
+});
+// ======= GAME TABS FILTERING =======
+const gameTabs = document.querySelectorAll('.game-tab');
+const gameCards = document.querySelectorAll('.game-card');
+gameTabs.forEach(tab => {
+  tab.addEventListener('click', function() {
+    gameTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const cat = tab.dataset.category;
+    gameCards.forEach(card => {
+      if (cat === 'all' || card.dataset.category === cat) {
+        card.style.display = '';
+        setTimeout(() => card.classList.add('reveal'), 10);
+      } else {
+        card.classList.remove('reveal');
+        setTimeout(() => card.style.display = 'none', 250);
+      }
+    });
+  });
+});
+</script>
 </head>
 <body>
 
@@ -879,11 +1040,14 @@
 <nav>
   <a href="#" class="nav-logo">♠ ROYAL FLUSH</a>
   <ul class="nav-links">
-    <li><a href="#games">Games</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#demo">Demo</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#games" class="nav-link">Games</a></li>
+    <li><a href="#skills" class="nav-link">Skills</a></li>
+    <li><a href="#demo" class="nav-link">Demo</a></li>
+    <li><a href="#contact" class="nav-link">Contact</a></li>
   </ul>
+  <button class="nav-menu-btn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -937,10 +1101,19 @@
   <div class="gold-rule"><span></span><i>♦</i><span></span></div>
   <p class="section-desc">A curated collection of casino game projects, from RNG slots to live dealer simulations.</p>
 
-  <div class="games-grid">
+  <!-- Category Tabs -->
+  <div class="game-tabs" id="gameTabs">
+    <button class="game-tab active" data-category="all">All</button>
+    <button class="game-tab" data-category="slots">Slots</button>
+    <button class="game-tab" data-category="blackjack">Blackjack</button>
+    <button class="game-tab" data-category="roulette">Roulette</button>
+    <button class="game-tab" data-category="baccarat">Baccarat</button>
+    <button class="game-tab" data-category="poker">Poker</button>
+  </div>
 
+  <div class="games-grid" id="gamesGrid">
     <!-- Featured -->
-    <a href="projects/slot-machine.html" class="game-card featured reveal" style="text-decoration: none; color: inherit;">
+    <a href="projects/slot-machine.html" class="game-card featured reveal" data-category="slots" style="text-decoration: none; color: inherit;">
       <div class="card-corner"></div>
       <div class="card-corner br"></div>
       <div>
@@ -959,7 +1132,7 @@
       </div>
     </a>
 
-    <a href="projects/blackjack-royale.html" class="game-card reveal" style="text-decoration: none; color: inherit;">
+    <a href="projects/blackjack-royale.html" class="game-card reveal" data-category="blackjack" style="text-decoration: none; color: inherit;">
       <div class="card-corner"></div>
       <div class="card-corner br"></div>
       <span class="game-icon">🃏</span>
@@ -972,7 +1145,7 @@
       </div>
     </a>
 
-    <a href="royal-rouelette.html" class="game-card reveal" style="text-decoration: none; color: inherit;">
+    <a href="royal-rouelette.html" class="game-card reveal" data-category="roulette" style="text-decoration: none; color: inherit;">
       <div class="card-corner"></div>
       <div class="card-corner br"></div>
       <span class="game-icon">🎡</span>
@@ -985,7 +1158,7 @@
       </div>
     </a>
 
-    <a href="baccarat.html" class="game-card reveal" style="text-decoration: none; color: inherit;">
+    <a href="baccarat.html" class="game-card reveal" data-category="baccarat" style="text-decoration: none; color: inherit;">
       <div class="card-corner"></div>
       <div class="card-corner br"></div>
       <span class="game-icon">🎴</span>
@@ -998,7 +1171,7 @@
       </div>
     </a>
 
-    <a href="poker.html" class="game-card reveal" style="text-decoration: none; color: inherit;">
+    <a href="poker.html" class="game-card reveal" data-category="poker" style="text-decoration: none; color: inherit;">
       <div class="card-corner"></div>
       <div class="card-corner br"></div>
       <span class="game-icon">♠️</span>
@@ -1010,7 +1183,6 @@
         <div class="stat"><span class="stat-value">LIVE</span><span class="stat-label">Play Now</span></div>
       </div>
     </a>
-
   </div>
 </section>
 
@@ -1063,7 +1235,7 @@
       "The house always wins — but your project doesn't have to play against the odds.
       Let's build something that stacks the deck in your favor."
     </p>
-    <a href="mailto:hello@royalflush.dev" class="btn-primary" style="display:inline-block;text-decoration:none">
+    <a href="mailto:hsoscano@gmail.com" class="btn-primary" style="display:inline-block;text-decoration:none">
       Deal Me In
     </a>
     <div class="contact-chips">
