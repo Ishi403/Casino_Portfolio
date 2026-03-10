@@ -1258,33 +1258,38 @@ const AI_POOL = [
 ];
 
 function startGame(){
-  const name = document.getElementById('nameIn').value.trim()||'Maverick';
-  const chips = parseInt(document.getElementById('chipsIn').value);
-  const nOpps = parseInt(document.getElementById('oppsIn').value);
-  const diff = document.getElementById('diffIn').value;
-  const [sbStr,bbStr] = document.getElementById('blindIn').value.split('/');
-  const sb=parseInt(sbStr), bb=parseInt(bbStr);
+  try {
+    const name = document.getElementById('nameIn').value.trim()||'Maverick';
+    const chips = parseInt(document.getElementById('chipsIn').value);
+    const nOpps = parseInt(document.getElementById('oppsIn').value);
+    const diff = document.getElementById('diffIn').value;
+    const [sbStr,bbStr] = document.getElementById('blindIn').value.split('/');
+    const sb=parseInt(sbStr), bb=parseInt(bbStr);
 
-  const pool = shuffle(AI_POOL);
-  const opps = pool.slice(0,nOpps).map((a,i)=>({
-    id:i, name:a.name, emoji:a.emoji, chips, hole:[], bet:0,
-    folded:false, bust:false, isDealer:false, bluff:Math.random()
-  }));
+    const pool = shuffle(AI_POOL);
+    const opps = pool.slice(0,nOpps).map((a,i)=>({
+      id:i, name:a.name, emoji:a.emoji, chips:chips, hole:[], bet:0,
+      folded:false, bust:false, isDealer:false, bluff:Math.random()
+    }));
 
-  G = {
-    player:{name,chips,hole:[],bet:0,folded:false},
-    opps, deck:[], community:[], pot:0, stage:'pre-flop',
-    currentBet:0, dealerPos:0, round:1,
-    handsPlayed:0, handsWon:0, biggestPot:0,
-    sb, bb, diff, myTurn:false, processing:false, logOpen:false,
-    raiseAmount:0,
-  };
+    G = {
+      player:{name:name,chips:chips,hole:[],bet:0,folded:false},
+      opps:opps, deck:[], community:[], pot:0, stage:'pre-flop',
+      currentBet:0, dealerPos:0, round:1,
+      handsPlayed:0, handsWon:0, biggestPot:0,
+      sb:sb, bb:bb, diff:diff, myTurn:false, processing:false, logOpen:false,
+      raiseAmount:0,
+    };
 
-  buildOppsUI();
-  document.getElementById('playerNameTag').textContent = name;
-  updateHUD();
-  showScreen('game');
-  setTimeout(()=>dealHand(), 300);
+    buildOppsUI();
+    document.getElementById('playerNameTag').textContent = name;
+    updateHUD();
+    showScreen('game');
+    setTimeout(function(){dealHand();}, 300);
+  } catch(err) {
+    console.error('Error in startGame:', err);
+    alert('Error starting game: ' + err.message);
+  }
 }
 
 function buildOppsUI(){
@@ -1339,8 +1344,16 @@ function dealHand(){
 
   // Deal cards with animation stagger
   for(let i=0;i<2;i++){
-    G.player.hole.push(G.deck.pop());
-    G.opps.forEach(o=>{ if(!o.bust) o.hole.push(G.deck.pop()); });
+    const playerCard = G.deck.pop();
+    playerCard._new = true;
+    G.player.hole.push(playerCard);
+    G.opps.forEach(o=>{ 
+      if(!o.bust) {
+        const oppCard = G.deck.pop();
+        oppCard._new = true;
+        o.hole.push(oppCard);
+      }
+    });
   }
 
   renderAll();
