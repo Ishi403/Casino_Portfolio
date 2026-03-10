@@ -179,6 +179,13 @@ body {
   transition: all 0.3s;
   position:relative; overflow:hidden;
   animation: fadeInUp 0.8s ease 0.5s both;
+  z-index:10;
+  pointer-events:auto;
+}
+.btn-deal:disabled {
+  opacity:0.5;
+  cursor:not-allowed;
+  pointer-events:none;
 }
 .btn-deal::before {
   content:'';
@@ -381,7 +388,12 @@ body {
 }
 .opp-bubble.folded-state { opacity:0.3; filter:grayscale(0.8); }
 .opp-bubble.busted-state { opacity:0.15; filter:grayscale(1); }
-.opp-avatar { font-size:18px; line-height:1; }
+.opp-avatar { 
+  font-size:32px; 
+  line-height:1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  margin-bottom:4px;
+}
 .opp-name { font-family:'Cinzel',serif; font-size:9px; letter-spacing:0.1em; color:var(--cream2); }
 .opp-chips-val { font-family:'Cinzel',serif; font-size:13px; color:var(--gold); }
 .opp-bet-tag { font-size:8px; color:#6dbe8c; letter-spacing:0.05em; min-height:10px; }
@@ -966,7 +978,7 @@ body {
           <option value="100/200">$100/$200 — Nosebleed</option>
         </select>
       </div>
-      <button class="btn-deal" onclick="startGame()">Deal Me In ♠</button>
+      <button class="btn-deal" id="dealBtn" onclick="startGame()">Deal Me In ♠</button>
     </div>
 
     <div class="gold-ornament" style="margin-top:6px">
@@ -1251,13 +1263,14 @@ function saveST(){ try{localStorage.setItem('acesHighStats',JSON.stringify(ST));
 /* ═══════════════ GAME STATE ═══════════════ */
 let G={myTurn:false,player:{folded:false},opps:[]};
 const AI_POOL = [
-  {name:'Viper',emoji:'🦊'},{name:'Phantom',emoji:'👤'},{name:'Blaze',emoji:'🔥'},
-  {name:'Shadow',emoji:'🌑'},{name:'Duchess',emoji:'👑'},{name:'Ace',emoji:'🎯'},
-  {name:'Ghost',emoji:'👻'},{name:'Rex',emoji:'🦁'},{name:'Storm',emoji:'⚡'},
-  {name:'Cobra',emoji:'🐍'},{name:'Nova',emoji:'⭐'},{name:'Duke',emoji:'🎩'},
+  {name:'Marcus',emoji:'👨🏾‍💼'},{name:'Sophia',emoji:'👩🏻‍💼'},{name:'Chen',emoji:'👨🏻‍💼'},
+  {name:'Isabella',emoji:'👩🏽‍💼'},{name:'Viktor',emoji:'👨🏼‍💼'},{name:'Amara',emoji:'👩🏿‍💼'},
+  {name:'Dmitri',emoji:'👨🏻‍🦱'},{name:'Yuki',emoji:'👩🏻'},{name:'Carlos',emoji:'👨🏽'},
+  {name:'Elena',emoji:'👩🏼'},{name:'Rashid',emoji:'👨🏾'},{name:'Natasha',emoji:'👩🏼‍🦰'},
 ];
 
 function startGame(){
+  console.log('✓ Deal Me In button clicked - Starting game...');
   try {
     const name = document.getElementById('nameIn').value.trim()||'Maverick';
     const chips = parseInt(document.getElementById('chipsIn').value);
@@ -1265,6 +1278,8 @@ function startGame(){
     const diff = document.getElementById('diffIn').value;
     const [sbStr,bbStr] = document.getElementById('blindIn').value.split('/');
     const sb=parseInt(sbStr), bb=parseInt(bbStr);
+    
+    console.log('✓ Game settings:', {name, chips, nOpps, diff, sb, bb});
 
     const pool = shuffle(AI_POOL);
     const opps = pool.slice(0,nOpps).map((a,i)=>({
@@ -1280,14 +1295,18 @@ function startGame(){
       sb:sb, bb:bb, diff:diff, myTurn:false, processing:false, logOpen:false,
       raiseAmount:0,
     };
+    
+    console.log('✓ Game state initialized');
 
     buildOppsUI();
     document.getElementById('playerNameTag').textContent = name;
     updateHUD();
+    console.log('✓ UI built - Switching to game screen');
     showScreen('game');
+    console.log('✓ Dealing hand in 300ms...');
     setTimeout(function(){dealHand();}, 300);
   } catch(err) {
-    console.error('Error in startGame:', err);
+    console.error('❌ Error in startGame:', err);
     alert('Error starting game: ' + err.message);
   }
 }
@@ -1317,6 +1336,7 @@ function buildOppsUI(){
 
 /* ═══════════════ DEAL ═══════════════ */
 function dealHand(){
+  console.log('🎴 Dealing hand...');
   G.deck = shuffle(mkDeck());
   G.community = [];
   G.pot = 0; G.currentBet = 0;
@@ -1372,6 +1392,7 @@ function dealHand(){
   document.getElementById('bbShow').textContent=`$${G.bb}`;
   document.getElementById('stagePill').textContent='PRE-FLOP';
 
+  console.log('🎮 Player turn enabled');
   setTurn(true);
 }
 
@@ -1549,7 +1570,11 @@ function updateSliderGradient(){
 
 /* ═══════════════ PLAYER ACTIONS ═══════════════ */
 function act(type){
-  if(!G.myTurn||G.player.folded||G.processing) return;
+  if(!G.myTurn||G.player.folded||G.processing) {
+    console.log('⚠️ Cannot act:', {myTurn:G.myTurn, folded:G.player.folded, processing:G.processing});
+    return;
+  }
+  console.log('✓ Player action:', type);
   setTurn(false); hideRaise();
 
   switch(type){
@@ -1590,6 +1615,7 @@ function act(type){
   renderPot();
 
   if(checkHandOver()) return;
+  console.log('🤖 Running AI...');
   runAI();
 }
 
@@ -1614,8 +1640,10 @@ function checkHandOver(){
 }
 
 async function runAI(){
+  console.log('🤖 AI turn started');
   G.processing=true;
   const live=liveOpps();
+  console.log(`🤖 ${live.length} AI opponents to act`);
   for(const o of live){
     await sleep(600+Math.random()*700);
     setThink(o.id,true);
@@ -1634,6 +1662,7 @@ async function runAI(){
     if(checkHandOver()){ G.processing=false; return; }
   }
   G.processing=false;
+  console.log('🎲 AI complete - advancing stage');
   await sleep(300);
   advanceStage();
 }
@@ -1697,6 +1726,7 @@ function execAI(o,action){
 
 /* ═══════════════ STAGE ═══════════════ */
 function advanceStage(){
+  console.log('📊 Advancing from stage:', G.stage);
   resetBets();
   const stageName={
     'pre-flop':'FLOP','flop':'TURN','turn':'RIVER','river':'SHOWDOWN'
@@ -1793,7 +1823,7 @@ function doShowdown(){
     logLine(`${winner.who.name} wins $${fmt(potGone)} — ${winner.res.name}`,'win');
     document.getElementById('feltOval').classList.add('loss-pulse');
     setTimeout(()=>document.getElementById('feltOval').classList.remove('loss-pulse'),5000);
-    showResult(false,`${winner.who.name} Wins`,'with ${winner.res.name}`,potGone,false);
+    showResult(false,`${winner.who.name} Wins`,`with ${winner.res.name}`,potGone,false);
   }
 
   ST.played++;
@@ -2029,7 +2059,17 @@ document.addEventListener('keydown',function(e){
 document.addEventListener('DOMContentLoaded', function(){
   buildHow();
   buildRanks();
+  
+  // Attach event listener to Deal Me In button for reliability
+  var dealBtn = document.getElementById('dealBtn');
+  if(dealBtn) {
+    dealBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      startGame();
+    });
+  }
 });
 </script>
 </body>
 </html>
+
